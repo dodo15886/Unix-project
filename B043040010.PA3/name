@@ -1,0 +1,32 @@
+#!/bin/tcsh
+
+if ( X$1 == X-c ) then
+    set flag=1
+    shift
+else if ( X$2 == X-c ) then
+    set flag=1
+endif
+
+if ($?flag) then
+    if ($1 == coins) then
+        echo -n "Some"
+    else
+        echo -n "A"
+    endif
+else
+    if ($1 == coins) then
+        echo -n "some"
+    else
+        echo -n "a"
+    endif
+endif
+
+if ( `echo $1 | cut -c 1-1` =~ [aeiou] ) then
+    echo -n "n "; echo -n $1
+else
+    echo -n " "; echo -n $1
+    if ($1 == "silver") then
+        echo -n " bar"
+    endif
+endif
+echo

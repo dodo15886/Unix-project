@@ -1,0 +1,73 @@
+#!/usr/bin/tcsh
+cd; rm -rf PA5
+tar -xvf PA5.tar >& /dev/null
+cp [BMIJ]0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].pa5/handle.awk PA5/scripts
+cd ~/PA5/start
+~/PA5/scripts/display -f
+while( 1 )
+	cd `pwd -P`
+	echo -n ">" 
+	set apple="$<"
+	set apple=`echo $apple | sed 's/^switch/press/' | sed 's/button/switch/' | sed 's/throw/drop/' | sed 's/board/enter/' |  sed 's/\(examine\) \(.*\)/x \2/' | sed 's/get/take/' | sed 's/[ ]\{1,\}/ /g' | sed 's/\(look\) \(.*\)/x \2/' | sed 's/\(l\) \(.*\)/x \2/' | sed 's/^examize$/l/' | sed 's/^look$/l/' | sed 's/inventory/i/' | sed 's/^x$/l/' | sed 's/nitric/acid/'`
+	set A=( $apple "extraApple" )
+	
+	if ( $#A == 0 ) continue 
+
+	if( -e ~/PA5/inventory/bus && ($A[1] == "take" || $A[1] == "drop") ) then
+			echo "You can't take anything while on the bus."
+			continue
+	endif
+	
+	if ( $A[1] == quit ) then
+		exit
+	else if ( $A[1] == l ) then
+		~/PA5/scripts/display -f
+	else if ( $A[1] == i ) then
+		echo You currently have:
+		ls ~/PA5/inventory | sed 1i. | ~/PA5/scripts/name.sed
+	else if ( ( $A[1] == "take" ) && ( $A[2] == "all" ) ) then
+		ls | sed 1i:\ Taken. | ~/PA5/scripts/name.sed | tee ~/PA5/worked
+		if ( -z ~/PA5/worked ) then
+			echo Nothing to take.
+		else
+			mv ` cat ~/PA5/worked | awk '{str = "acid&bin&bins&bone&bus&cliff&coins&computer&dinosaur&egg&fish&game2&gate&glycerine&jar&key&lamp&license&mail&nitric&ruby&silver&switch&tank&tanks"; n = split(str, arr, "&"); sub(": Taken.", ""); for(i=1;i<=n;i = i+1){	if( arr[i] == $1 || arr[i] == $2 || arr[i] == $3){ print arr[i]}}}'` ~/PA5/inventory
+		endif
+	else if ( ( $A[1] == drop ) || ( $A[1] == take ) || ( $A[1] == x ) || ( $A[1] == press ) ) then
+		~/PA5/scripts/handle `echo $apple` && echo $A[1] $A[2] | awk '{if($1=="take"){print": Taken.\n"$2}; if($1=="drop") {print "D\n"$2}; if($1=="x" || $1=="press"){print $2};}' | ~/PA5/scripts/name.sed | sed 's/.*D/Done./'
+	else if ( $A[1] == enter ) then
+		if ( -e ~/PA5/inventory/bus ) then
+			echo You are already in the bus\!
+		else if ( ! -e bus ) then
+			echo "You can't go that way."
+		else if ( ! -e ~/PA5/inventory/license ) then
+			echo "You are not licensed for this type of vehicle."
+		else 
+			echo "You board the bus and get in the driver's seat."
+			mv bus ~/PA5/inventory
+		endif
+	else if ( $A[1] == exit ) then
+		if ( -e ~/PA5/inventory/bus ) then
+			echo You hop off the bus.
+			mv ~/PA5/inventory/bus .
+		else if ( ! -e bus ) then
+			echo You can\'t go that way.
+		else 
+			echo You are already off the bus\!
+		endif
+	else if ($A[1] == n || $A[1] == s || $A[1] == e ||$A[1] == w || $A[1] == ne || $A[1] == se ||$A[1] == nw ||$A[1] == sw ||$A[1] == u ||$A[1] == d ||) then
+		set rev = `echo $A[1]|tr news swen`
+    	if ( -d $A[1] ) then
+      		cd $A[1]
+      		~/PA5/scripts/display
+    	else if ( -d ../$rev ) then
+      		cd ..
+      		~/PA5/scripts/display
+    	else
+      		echo You can\'t go that way.
+    	endif
+  	else
+    	echo I don\'t understand that.
+  	endif
+end
+
+
