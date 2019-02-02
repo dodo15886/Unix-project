@@ -1,0 +1,11 @@
+alias item='(( (ls [seajlrk]**[embgrd]* &> /dev/null && echo Here there is)&&ls [seajlrk]**[embgrd]*) || (ls [seajlrk]**[embgrd]* &> /dev/null && echo Here there is)&&(ls [bcg]**[our]*[es] && echo Here there is)) 2> /dev/null'
+alias see='cat `ls .des*`; head -1  ~/collect/`ls .des*` > `ls .des*`; items; rm -f temp;cd `pwd -P`'
+alias look='cat ~/collect/`ls .des*`;items'
+alias nw='cd nw 2> /dev/null;see'
+alias se='basename `pwd` > temp; (fgrep -w nw temp &> /dev/null ) && cd ..; see'
+alias e='basename `pwd` > temp; (cd e 2> /dev/null ) || ((fgrep -w w temp &> /dev/null ) && cd ..); see'
+alias w='basename `pwd` > temp; (cd w 2> /dev/null ) || ((fgrep -w e temp &> /dev/null ) && cd ..); see'
+alias n='basename `pwd` > temp; (cd n 2> /dev/null ) || ((fgrep -w s temp &> /dev/null ) && cd ..); see'
+alias s='basename `pwd` > temp; (cd s 2> /dev/null ) || ((fgrep -w n temp &> /dev/null ) && cd ..); see'
+cd;rm ~/start;tar xvf PA2.tar;cd PA2/start; ~/collectDescriptions; see
+

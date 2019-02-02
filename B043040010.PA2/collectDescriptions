@@ -1,0 +1,1 @@
+cp `find ~/start -name *.description*` ~/collect
